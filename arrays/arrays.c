@@ -26,7 +26,7 @@ Array *array = malloc(sizeof(Array));
  array->capacity = capacity;
     array -> count = 0 ;
   // Allocate memory for elements
-    array -> elements = malloc(capacity * sizeof(char));
+    array -> elements = malloc(capacity * sizeof(char *));
     return array ;
     
 }
@@ -80,8 +80,14 @@ void resize_array(Array *arr) {
 char *arr_read(Array *arr, int index) {
 
   // Throw an error if the index is greater or equal to than the current count
-
+    if (index >= arr->count) {
+        perror("error getting index") ;
+    } else {
   // Otherwise, return the element at the given index
+        return arr->elements[index];
+    }
+    return NULL ;
+    
 }
 
 
@@ -91,15 +97,27 @@ char *arr_read(Array *arr, int index) {
 void arr_insert(Array *arr, char *element, int index) {
 
   // Throw an error if the index is greater than the current count
-
+    if (index > arr->count) {
+        perror("Error getting value at index:");
+    }
   // Resize the array if the number of elements is over capacity
-
+    if (arr->count >= arr->capacity) {
+        resize_array(arr);
+    }
   // Move every element after the insert index to the right one position
-
+    for (int i = arr->count; i > index; i--) {
+        arr->elements[i] = arr->elements[i-1];
+    }
+    
   // Copy the element and add it to the array
-
+    char *new = malloc(strlen(element));
+    strcpy(new, element);
+    arr->elements[index] = new;
+    
   // Increment count by 1
-
+    arr->count++ ;
+    
+    
 }
 
 /*****
@@ -109,7 +127,12 @@ void arr_append(Array *arr, char *element) {
 
   // Resize the array if the number of elements is over capacity
   // or throw an error if resize isn't implemented yet.
-
+    if (arr->count >= arr->capacity) {
+        resize_array(arr);
+    } else {
+         perror("No resize");
+    }
+    
   // Copy the element and add it to the end of the array
 
   // Increment count by 1
